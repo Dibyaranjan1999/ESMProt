@@ -5,9 +5,7 @@ from stmol import showmol
 import py3Dmol
 import requests
 import biotite.structure.io as bsio
-import urllib3
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 #st.set_page_config(layout = 'wide')
 st.sidebar.title('🧬 ESMProt')
@@ -27,6 +25,7 @@ def render_mol(pdb):
 # Protein sequence input
 DEFAULT_SEQ = "MGSSHHHHHHSSGLVPRGSHMRGPNPTAASLEASAGPFTVRSFTVSRPSGYGAGTVYYPTNAGGTVGAIAIVPGYTARQSSIKWWGPRLASHGFVVITIDTNSTLDQPSSRSSQQMAALRQVASLNGTSSSPIYGKVDTARMGVMGWSMGGGGSLISAANNPSLKAAAPQAPWDSSTNFSSVTVPTLIFACENDSIAPVNSSALPIYDSMSRNAKQFLEINGGSHSCANSGNSNQALIGKKGVAWMKRFMDNDTRYSTFACENPNSTRVSDFRTANCSLEDPAANKARKEAELAAATAEQ"
 txt = st.sidebar.text_area('Input sequence', DEFAULT_SEQ, height=275)
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # ESMProt
 def update(sequence=txt):
@@ -34,6 +33,7 @@ def update(sequence=txt):
         'Content-Type': 'application/x-www-form-urlencoded',
     }
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence)
+    response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence,verify=False)
     name = sequence[:3] + sequence[-3:]
     pdb_string = response.content.decode('utf-8')
 
