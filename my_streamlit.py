@@ -1,39 +1,46 @@
-# This is app is created by Dibya ranjan patra
-
 import streamlit as st
 from stmol import showmol
 import py3Dmol
-import requests
-import biotite.structure.io as bsio
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import requests                         
+import biotite.structure.io as bsio 
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #st.set_page_config(layout = 'wide')
-st.sidebar.title('🧬 ESMProt')
-st.sidebar.write('[*ESMprot*](https://esmatlas.com/about) is an end-to-end single sequence protein structure predictor based on the ESM-2 language model(sequence length < 400). For more information, read the [research article](https://www.biorxiv.org/content/10.1101/2022.07.20.500902v2) and the [news article](https://www.nature.com/articles/d41586-022-03539-1) published in *Nature*.')
+st.sidebar.title('🎈 ESMProt')
+st.sidebar.write('''
+[*ESMProt*](https://esmatlas.com/about) is an end-to-end single sequence protein structure predictor based on the ESM-2 language model. 
+For more information, read the [research article](https://www.biorxiv.org/content/10.1101/2022.07.20.500902v2) and the 
+[news article](https://www.nature.com/articles/d41586-022-03539-1) published in *Nature*.
+''')
 
 # stmol
 def render_mol(pdb):
     pdbview = py3Dmol.view()
-    pdbview.addModel(pdb,'pdb')
-    pdbview.setStyle({'cartoon':{'color':'spectrum'}})
+    pdbview.addModel(pdb, 'pdb')
+    pdbview.setStyle({'cartoon': {'color': 'spectrum'}})
     pdbview.setBackgroundColor('white')#('0xeeeeee')
     pdbview.zoomTo()
     pdbview.zoom(2, 800)
     pdbview.spin(True)
-    showmol(pdbview, height = 500,width=800)
+    showmol(pdbview, height=500, width=800)
 
 # Protein sequence input
 DEFAULT_SEQ = "MGSSHHHHHHSSGLVPRGSHMRGPNPTAASLEASAGPFTVRSFTVSRPSGYGAGTVYYPTNAGGTVGAIAIVPGYTARQSSIKWWGPRLASHGFVVITIDTNSTLDQPSSRSSQQMAALRQVASLNGTSSSPIYGKVDTARMGVMGWSMGGGGSLISAANNPSLKAAAPQAPWDSSTNFSSVTVPTLIFACENDSIAPVNSSALPIYDSMSRNAKQFLEINGGSHSCANSGNSNQALIGKKGVAWMKRFMDNDTRYSTFACENPNSTRVSDFRTANCSLEDPAANKARKEAELAAATAEQ"
 txt = st.sidebar.text_area('Input sequence', DEFAULT_SEQ, height=275)
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-# ESMProt
+# ESMprot
 def update(sequence=txt):
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
     }
-    response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence)
-    response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence,verify=False)
+    response = requests.post(
+        'https://api.esmatlas.com/foldSequence/v1/pdb/',
+        headers=headers,
+        data=sequence,
+        verify=False  # Disable SSL verification
+    )
     name = sequence[:3] + sequence[-3:]
     pdb_string = response.content.decode('utf-8')
 
@@ -61,8 +68,5 @@ def update(sequence=txt):
 
 predict = st.sidebar.button('Predict', on_click=update)
 
-
 if not predict:
     st.warning('👈 Enter protein sequence data!')
-
-
