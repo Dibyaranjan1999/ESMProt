@@ -4,11 +4,11 @@
 
 ## Demo App
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://esmprot.streamlit.app/)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)]()
 
 ## Credit
 
-This app was inspired by [dataprofessor's app](https://github.com/dataprofessor/esmfold/tree/master).
+This app was inspired by [ESM Metagenomic Atlas's app](https://esmatlas.com/resources?action=fold).
 
 ## Further Reading
 For more information, read the following articles:
